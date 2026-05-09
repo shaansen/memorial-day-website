@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYC Memorial Day 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbf6ee;
+    --bg-2: #f3ead9;
+    --ink: #1a1a1a;
+    --muted: #7a7468;
+    --line: #e3dac6;
+    --accent: #2b3a55;
+    --card: #fffefb;
+
+    --day1: #ef6f6c;
+    --day1-soft: #fde2e1;
+    --day2: #2cb1bc;
+    --day2-soft: #d6f1f3;
+    --day3: #f4b740;
+    --day3-soft: #fdebc6;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1200px 600px at 90% -10%, var(--day1-soft), transparent 60%),
+      radial-gradient(900px 500px at -10% 30%, var(--day2-soft), transparent 60%),
+      radial-gradient(800px 500px at 80% 90%, var(--day3-soft), transparent 70%),
+      var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 80px 20px 30px;
+    text-align: center;
+    position: relative;
+  }
+  .hero .eyebrow {
+    font-family: 'Caveat', cursive;
+    font-size: 1.6rem;
+    color: var(--day1);
+    transform: rotate(-2deg);
+    display: inline-block;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.1s forwards;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 8px 0 6px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.25s forwards;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--day2);
+  }
+  .hero .dates {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.4s forwards;
+  }
+
+  /* ---------- Sticky day nav ---------- */
+  .day-nav {
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    margin: 24px auto 30px;
+    max-width: fit-content;
+    background: rgba(255, 254, 251, 0.85);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  }
+  .day-nav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 18px;
+    border-radius: 999px;
+    transition: all 0.25s ease;
+  }
+  .day-nav a:hover { color: var(--ink); background: var(--bg-2); }
+  .day-nav a.active { color: white; background: var(--accent); }
+  .day-nav a[data-day="1"].active { background: var(--day1); }
+  .day-nav a[data-day="2"].active { background: var(--day2); }
+  .day-nav a[data-day="3"].active { background: var(--day3); color: #5a4500; }
+
+  /* ---------- Day card ---------- */
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px 100px;
+  }
+  .day {
+    background: var(--card);
+    border-radius: 28px;
+    padding: 36px 32px 32px;
+    margin-bottom: 32px;
+    border: 1px solid var(--line);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.02), 0 30px 60px -30px rgba(0,0,0,0.08);
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .day.in-view { opacity: 1; transform: none; }
+  .day::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, currentColor, transparent);
+  }
+  .day1 { color: var(--day1); }
+  .day2 { color: var(--day2); }
+  .day3 { color: var(--day3); }
+
+  .day-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+  .day-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 3.2rem;
+    line-height: 1;
+    color: currentColor;
+    opacity: 0.85;
+  }
+  .day-title { flex: 1; color: var(--ink); }
+  .day-title h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.7rem;
+    margin: 8px 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .day-tag {
+    display: inline-block;
+    color: white;
+    font-weight: 600;
+    font-size: 0.7rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: currentColor;
+  }
+  .day-tag span { color: white; }
+  .day3 .day-tag span { color: #5a4500; }
+  .day-title .tagline {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 4px 0 0;
+  }
+
+  /* ---------- Timeline ---------- */
+  .journey {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+  .journey::before {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    background: linear-gradient(180deg, currentColor, transparent);
+    opacity: 0.3;
+    border-radius: 2px;
+  }
+  .stop {
+    position: relative;
+    padding: 0 0 0 56px;
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: translateX(-12px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .stop:last-child { margin-bottom: 0; }
+  .day.in-view .stop {
+    opacity: 1;
+    transform: none;
+  }
+  .day.in-view .stop:nth-child(1) { transition-delay: 0.06s; }
+  .day.in-view .stop:nth-child(2) { transition-delay: 0.12s; }
+  .day.in-view .stop:nth-child(3) { transition-delay: 0.18s; }
+  .day.in-view .stop:nth-child(4) { transition-delay: 0.24s; }
+  .day.in-view .stop:nth-child(5) { transition-delay: 0.30s; }
+  .day.in-view .stop:nth-child(6) { transition-delay: 0.36s; }
+  .day.in-view .stop:nth-child(7) { transition-delay: 0.42s; }
+
+  .stop-icon {
+    position: absolute;
+    left: 4px;
+    top: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+    z-index: 2;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .stop-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.02), 0 14px 30px -20px rgba(0,0,0,0.1);
+  }
+  .stop-hero {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--bg-2);
+    overflow: hidden;
+  }
+  .stop-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+  .stop-card:hover .stop-hero img { transform: scale(1.03); }
+
+  .stop-body {
+    padding: 16px 20px 18px;
+    color: #383838;
+    font-size: 0.95rem;
+  }
+  .stop-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .when {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: currentColor;
+    background: var(--bg-2);
+    padding: 3px 10px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+  .day1 .when { background: var(--day1-soft); color: #b34944; }
+  .day2 .when { background: var(--day2-soft); color: #1d7a82; }
+  .day3 .when { background: var(--day3-soft); color: #8a6308; }
+  .what {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .stop-body p { margin: 6px 0; }
+  .stop-body ul { margin: 8px 0 6px; padding-left: 20px; }
+  .stop-body li { margin-bottom: 6px; }
+  .pin { color: var(--accent); font-weight: 600; }
+  .note {
+    background: linear-gradient(135deg, #fff8e7, #fef0d0);
+    border-left: 3px solid var(--day3);
+    padding: 10px 14px;
+    border-radius: 6px;
+    color: #5a4500;
+    margin-top: 10px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.05rem;
+    line-height: 1.4;
+  }
+  .scribble {
+    font-family: 'Caveat', cursive;
+    color: var(--day1);
+    font-size: 1.1rem;
+    transform: rotate(-1deg);
+    display: inline-block;
+  }
+  .day2 .scribble { color: var(--day2); }
+  .day3 .scribble { color: #8a6308; }
+
+  /* ---------- Two-option grid ---------- */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .option-card {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .option-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -18px rgba(0,0,0,0.18);
+  }
+  .opt-hero {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--bg-2);
+  }
+  .opt-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+  .option-card:hover .opt-hero img { transform: scale(1.04); }
+  .opt-body {
+    padding: 12px 14px 14px;
+    flex: 1;
+  }
+  .opt-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin: 0 0 2px;
+    color: var(--ink);
+  }
+  .opt-meta {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  .opt-blurb {
+    font-size: 0.88rem;
+    color: #383838;
+    margin: 0;
+  }
+
+  /* ---------- Wishlist ---------- */
+  .extras {
+    margin-top: 30px;
+    background: var(--card);
+    border: 1px dashed var(--line);
+    border-radius: 24px;
+    padding: 22px 26px;
+  }
+  .extras summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .extras summary::-webkit-details-marker { display: none; }
+  .extras h3 {
+    margin: 0;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--accent);
+  }
+  .extras .badge {
+    margin-left: auto;
+    font-family: 'Caveat', cursive;
+    color: var(--day1);
+    font-size: 1.1rem;
+  }
+  .extras .detail {
+    margin-top: 12px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .footer-mark {
+    text-align: center;
+    margin-top: 40px;
+    font-family: 'Caveat', cursive;
+    color: var(--muted);
+    font-size: 1.2rem;
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 600px) {
+    .hero { padding: 40px 16px 14px; }
+    .hero .eyebrow { font-size: 1.3rem; }
+    .hero h1 { font-size: clamp(2.2rem, 8.5vw, 3rem); margin-top: 6px; }
+    .hero .dates { font-size: 1rem; }
+
+    .day-nav {
+      top: 8px;
+      margin: 16px auto 22px;
+      gap: 4px;
+      padding: 6px;
+      max-width: calc(100% - 24px);
+    }
+    .day-nav a { padding: 10px 16px; font-size: 0.85rem; }
+
+    .wrap { padding: 0 14px 80px; }
+
+    .day { padding: 24px 18px 22px; border-radius: 22px; margin-bottom: 24px; }
+    .day-head { gap: 12px; }
+    .day-num { font-size: 2.2rem; }
+    .day-title h2 { font-size: 1.3rem; }
+    .day-title .tagline { font-size: 0.9rem; }
+
+    .journey::before { left: 16px; }
+    .stop { padding-left: 44px; }
+    .stop-icon { left: 2px; width: 28px; height: 28px; top: 12px; font-size: 0.78rem; }
+
+    .stop-body { padding: 14px 16px 16px; }
+    .what { font-size: 1.05rem; }
+
+    .options-grid { grid-template-columns: 1fr; }
+
+    .extras { padding: 18px 18px; border-radius: 18px; margin-top: 22px; }
+    .extras .badge { font-size: 1rem; }
+    .footer-mark { font-size: 1.05rem; margin-top: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow">Memorial Day Weekend</span>
+  <h1>two <em>days</em><br>in new york</h1>
+  <div class="dates">May 23 — 24, 2026</div>
+</header>
+
+<nav class="day-nav" aria-label="Jump to day">
+  <a href="#day1" data-day="1">Sat</a>
+  <a href="#day2" data-day="2">Sun</a>
+</nav>
+
+<main class="wrap">
+
+  <!-- ===== DAY 1 ===== -->
+  <section class="day day1" id="day1">
+    <div class="day-head">
+      <span class="day-num">01</span>
+      <div class="day-title">
+        <span class="day-tag"><span>Sat · May 23</span></span>
+        <h2>Arrive · Ferry · Broadway</h2>
+        <p class="tagline">Land late morning. Easy afternoon downtown. Show in the evening.</p>
+      </div>
+    </div>
+
+    <ol class="journey">
+      <li class="stop">
+        <span class="stop-icon" aria-hidden="true">1</span>
+        <div class="stop-card">
+          <div class="stop-body">
+            <div class="stop-meta">
+              <span class="when">Midday</span>
+              <span class="what">Arrive → hotel</span>
+            </div>
+            <p>Cab to the hotel. Drop bags — room won't be ready until 3 PM.</p>
+            <div class="note">Memorial Day weekend traffic is unpredictable. Build in extra time at every step today.</div>
+          </div>
+        </div>
+      </li>
+
+      <li class="stop">
+        <span class="stop-icon" aria-hidden="true">2</span>
+        <div class="stop-card">
+          <div class="stop-hero">
+            <img src="images/charging%20bull/images.jpg" alt="Charging Bull statue at Bowling Green" loading="lazy">
+          </div>
+          <div class="stop-body">
+            <div class="stop-meta">
+              <span class="when">Early afternoon</span>
+              <span class="what">FiDi wander · Charging Bull</span>
+            </div>
+            <p>Short walk south through the narrow old-NY streets. Quick photo hits along the way:</p>
+            <ul>
+              <li><span class="pin">Charging Bull</span> — Bowling Green, foot of Broadway</li>
+              <li><span class="pin">Fearless Girl</span> — opposite the NYSE on Broad St</li>
+              <li><span class="pin">Stone Street</span> — cobblestoned, lined with old taverns</li>
+              <li><span class="pin">Trinity Church</span> — Wall &amp; Broadway, Hamilton's grave in the churchyard</li>
+            </ul>
+            <p>~30–40 min loop, fully walkable from the hotel.</p>
+          </div>
+        </div>
+      </li>
+
+      <li class="stop">
+        <span class="stop-icon" aria-hidden="true">3</span>
+        <div class="stop-card">
+          <div class="stop-body">
+            <div class="stop-meta">
+              <span class="when">Afternoon</span>
+              <span class="what">Saurav picks lunch spot</span>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li class="stop">
+        <span class="stop-icon" aria-hidden="true">4</span>
+        <div class="stop-card">
+          <div class="stop-hero">
+            <img src="images/staten-island-ferry/staten-island-ferry-flickr.webp" alt="Staten Island Ferry on the harbor" loading="lazy">
+          </div>
+          <div class="stop-body">
+            <div class="stop-meta">
+              <span class="when">Afternoon</span>
+              <span class="what">Staten Island Ferry</span>
+            </div>
+            <p>Short walk to Whitehall Terminal. Free, ~25 min each way. Stay on the boat or hop off and catch the next return.</p>
+            <p><span class="scribble">skyline + Lady Liberty — pure relaxed-mode</span></p>
+          </div>
+        </div>
+      </li>
+
+      <li class="stop">
+        <span class="stop-icon" aria-hidden="true">5</span>
+        <div class="stop-card">
+          <div class="stop-body">
+            <div class="stop-meta">
+              <span class="when">Late afternoon</span>
+              <span class="what">Hotel reset</span>
+            </div>
+            <p>Check in properly, freshen up, breathe before heading to midtown.</p>
+          </div>
+        </div>
+      </li>
+
+      <li class="stop">
+        <span class="stop-icon" aria-hidden="true">6</span>
+        <div class="stop-card">
+          <div class="stop-body">
+            <div class="stop-meta">
+              <span class="when">Early evening</span>
+              <span class="what">Shantanu and Charlie pick a dinner spot</span>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li class="stop">
+        <span class="stop-icon" aria-hidden="true">7</span>
+        <div class="stop-card">
+          <div class="stop-body">
+            <div class="stop-meta">
+              <span class="when">Evening</span>
+              <span class="what">Pick a show · Broadway</span>
+            </div>
+            <p>Two solid options on the table — pick whichever fits the mood.</p>
+            <div class="options-grid">
+              <div class="option-card">
+                <div class="opt-hero">
+                  <img src="images/dog%20day%20afternoon/DDA-BroadwayDirect-1200x675-1.webp" alt="Dog Day Afternoon on Broadway" loading="lazy">
+                </div>
+                <div class="opt-body">
+                  <h4 class="opt-name">Dog Day Afternoon</h4>
+                  <p class="opt-meta">August Wilson · 245 W 52nd · 7 PM</p>
+                  <p class="opt-blurb">Stage adaptation of the 1975 Pacino classic. Tense, sweaty, very NYC.</p>
+                </div>
+              </div>
+              <div class="option-card">
+                <div class="opt-hero">
+                  <img src="images/fallen-angels/2_fallen_angels-1200x600-NYTG.png" alt="Fallen Angels on Broadway" loading="lazy">
+                </div>
+                <div class="opt-body">
+                  <h4 class="opt-name">Fallen Angels</h4>
+                  <p class="opt-meta">Broadway revival · 8 PM curtain</p>
+                  <p class="opt-blurb">Noël Coward two-hander — sharp, witty, more cocktail-hour pace.</p>
+                </div>
+              </div>
+            </div>
+            <p style="margin-top: 14px;"><span class="scribble">cab back to the hotel after the show</span></p>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ===== DAY 2 ===== -->
+  <section class="day day2" id="day2">
+    <div class="day-head">
+      <span class="day-num">02</span>
+      <div class="day-title">
+        <span class="day-tag"><span>Sun · May 24</span></span>
+        <h2>Bridge · Brunch · Brooklyn</h2>
+        <p class="tagline">Cross the bridge early, brunch in Williamsburg, eat your way through Prospect Park.</p>
+      </div>
+    </div>
+
+    <ol class="journey">
+        <li class="stop">
+          <span class="stop-icon" aria-hidden="true">1</span>
+          <div class="stop-card">
+            <div class="stop-hero">
+              <img src="images/brooklyn-bridge/pedestrians_crossing_the_brooklyn_bridge_u-davidjones.1080x600.jpg.webp" alt="Pedestrians crossing the Brooklyn Bridge" loading="lazy">
+            </div>
+            <div class="stop-body">
+              <div class="stop-meta">
+                <span class="when">9:30 AM</span>
+                <span class="what">Walk the Brooklyn Bridge</span>
+              </div>
+              <p>10-min walk to the pedestrian entrance at City Hall Park. Bridge crossing ~30–45 min with photo stops, lands you in DUMBO.</p>
+              <p>Look back over your shoulder for the iconic skyline shot. Bike lane is now separate from the wood walkway — pedestrians have it to themselves.</p>
+              <div class="note">cross before 10:30 AM — Memorial Day crowds peak midday</div>
+            </div>
+          </div>
+        </li>
+
+        <li class="stop">
+          <span class="stop-icon" aria-hidden="true">2</span>
+          <div class="stop-card">
+            <div class="stop-hero">
+              <img src="images/brooklyn-bridge/IMG_2162.jpeg" alt="Brooklyn Bridge from DUMBO" loading="lazy">
+            </div>
+            <div class="stop-body">
+              <div class="stop-meta">
+                <span class="when">10:30 AM</span>
+                <span class="what">DUMBO + Brooklyn Bridge Park</span>
+              </div>
+              <ul>
+                <li><span class="pin">Pebble Beach</span> — the Manhattan Bridge + skyline photo</li>
+                <li><span class="pin">Jane's Carousel</span> — 1922 vintage carousel under glass</li>
+                <li><span class="pin">Empire Stores</span> — old warehouse shops, photo of the bridge framed in the doorway</li>
+              </ul>
+              <p>Quick coffee or pastry pit-stop — but save real appetite for brunch.</p>
+            </div>
+          </div>
+        </li>
+
+        <li class="stop">
+          <span class="stop-icon" aria-hidden="true">3</span>
+          <div class="stop-card">
+            <div class="stop-body">
+              <div class="stop-meta">
+                <span class="when">12:00 PM</span>
+                <span class="what">Brunch in Williamsburg or Saurav's pick for lunch</span>
+              </div>
+              <p>Subway from York St (F) → Bedford Av (L), or Citi Bike up the waterfront. Two great calls — pick one.</p>
+              <div class="options-grid">
+                <div class="option-card">
+                  <div class="opt-hero">
+                    <img src="images/kfar/660b188c6d13b7e29676a609_KFar-New-York-Brooklyn-Interior-01.jpeg" alt="Kfar interior in Williamsburg" loading="lazy">
+                  </div>
+                  <div class="opt-body">
+                    <h4 class="opt-name">Kfar</h4>
+                    <p class="opt-meta">Williamsburg · Israeli café</p>
+                    <p class="opt-blurb">Sit-down brunch — shakshuka, sabich, malabi. Slow, sunlit room.</p>
+                  </div>
+                </div>
+                <div class="option-card">
+                  <div class="opt-hero">
+                    <img src="images/lindustrie/famous-burrata-slice-at-lindustrie-v0-k5t28ho7wufc1.webp" alt="Burrata slice at L'industrie" loading="lazy">
+                  </div>
+                  <div class="opt-body">
+                    <h4 class="opt-name">L'industrie</h4>
+                    <p class="opt-meta">Williamsburg · pizza by the slice</p>
+                    <p class="opt-blurb">Famous burrata slice — fast, standing or curb-sit. Your NY pizza moment.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li class="stop">
+          <span class="stop-icon" aria-hidden="true">4</span>
+          <div class="stop-card">
+            <div class="stop-body">
+              <div class="stop-meta">
+                <span class="when">Late afternoon</span>
+                <span class="what">Hotel reset</span>
+              </div>
+              <p>Subway/cab back from Williamsburg to the hotel. Decompress, freshen up before dinner.</p>
+            </div>
+          </div>
+        </li>
+
+        <li class="stop">
+          <span class="stop-icon" aria-hidden="true">5</span>
+          <div class="stop-card">
+            <div class="stop-body">
+              <div class="stop-meta">
+                <span class="when">Evening</span>
+                <span class="what">Shantanu and Charlie pick a dinner spot if we don't get Adda or Ambassador Clubhouse</span>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ol>
+  </section>
+
+
+  <div class="footer-mark">have the best slow weekend ✦</div>
+
+</main>
+
+<script>
+  // Reveal day cards on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.day').forEach(d => observer.observe(d));
+
+  // Sticky day-nav active state
+  const navLinks = document.querySelectorAll('.day-nav a');
+  const sections = ['day1', 'day2'].map(id => document.getElementById(id));
+  function updateActive() {
+    const y = window.scrollY + 200;
+    let active = sections[0];
+    sections.forEach(s => { if (s.offsetTop <= y) active = s; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + active.id));
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+</script>
+
+</body>
+</html>
